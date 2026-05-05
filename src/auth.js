@@ -7,7 +7,7 @@ export function renderLogin(container) {
   container.innerHTML = `
     <div class="auth-page">
       <div class="auth-card">
-        <div class="auth-logo">R$</div>
+        <img src="/logo-small.png" alt="RS Finance" class="auth-logo-img" />
         <h1 class="auth-title">RS Finance</h1>
         <p class="auth-subtitle">Controle seu orçamento pessoal</p>
 

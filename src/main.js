@@ -70,7 +70,7 @@ async function renderDashboard() {
     <!-- HEADER -->
     <header class="header" id="header">
       <div class="header-brand">
-        <div class="header-logo">R$</div>
+        <img src="/logo-small.png" alt="RS Finance" class="header-logo-img" />
         <div>
           <div class="header-title">RS Finance</div>
           <div class="header-subtitle">Olá, ${userName} 👋</div>
