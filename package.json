@@ -1,7 +1,10 @@
 {
   "name": "rs-finance",
-  "version": "0.0.0",
-  "private": true,
+  "version": "1.0.0",
+  "description": "App de gerenciamento de orçamento pessoal com dashboard visual, gráficos interativos e controle completo das suas finanças.",
+  "author": "Robson Santiago",
+  "license": "MIT",
+  "private": false,
   "type": "module",
   "scripts": {
     "dev": "vite",
