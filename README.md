@@ -1,23 +1,23 @@
-# 💰 RS Finance
+# RS Finance
 
 App de gerenciamento de orçamento pessoal. Controle seus gastos, saiba para onde vai seu dinheiro e visualize tudo com gráficos interativos.
 
 ![RS Finance Dashboard](https://img.shields.io/badge/status-production-brightgreen) ![Supabase](https://img.shields.io/badge/backend-Supabase-3ECF8E) ![Vite](https://img.shields.io/badge/frontend-Vite-646CFF) ![Chart.js](https://img.shields.io/badge/charts-Chart.js-FF6384)
 
-## ✨ Funcionalidades
+## Funcionalidades
 
-- 🔐 **Autenticação** — Login e registro com email/senha (Supabase Auth)
-- 📊 **Dashboard visual** — KPIs de receita, despesa, saldo e % comprometido
-- 🍩 **3 Gráficos interativos** — Entrada vs Saída, Tipo de Pagamento, e Distribuição por Categoria (valores em R$ e %)
-- ➕ **CRUD de transações** — Adicione, visualize e exclua gastos e receitas
-- 📅 **Navegação por mês** — Veja seus dados mês a mês
-- 🏷️ **Categorias automáticas** — 16 categorias pré-configuradas ao criar conta
-- 💳 **Métodos de pagamento** — PIX, Boleto, Crédito, Débito, TED, Dinheiro
-- 🔒 **Multi-usuário** — Cada usuário vê apenas seus dados (RLS)
-- 📱 **Responsivo** — Funciona em desktop, tablet e celular
-- 🌙 **Dark mode premium** — Design escuro com glassmorphism
+-  **Autenticação** — Login e registro com email/senha (Supabase Auth)
+-  **Dashboard visual** — KPIs de receita, despesa, saldo e % comprometido
+-  **3 Gráficos interativos** — Entrada vs Saída, Tipo de Pagamento, e Distribuição por Categoria (valores em R$ e %)
+-  **CRUD de transações** — Adicione, visualize e exclua gastos e receitas
+-  **Navegação por mês** — Veja seus dados mês a mês
+-  **Categorias automáticas** — 16 categorias pré-configuradas ao criar conta
+-  **Métodos de pagamento** — PIX, Boleto, Crédito, Débito, TED, Dinheiro
+-  **Multi-usuário** — Cada usuário vê apenas seus dados (RLS)
+-  **Responsivo** — Funciona em desktop, tablet e celular
+-  **Dark mode premium** — Design escuro com glassmorphism
 
-## 🛠️ Tecnologias
+## Tecnologias
 
 | Tecnologia | Uso |
 |---|---|
@@ -27,7 +27,7 @@ App de gerenciamento de orçamento pessoal. Controle seus gastos, saiba para ond
 | Vanilla JS | Frontend sem framework |
 | CSS3 | Design system custom |
 
-## 🚀 Setup Local
+## Setup Local
 
 ### 1. Clone o repositório
 
@@ -42,7 +42,7 @@ npm install
 Crie um projeto gratuito em [supabase.com](https://supabase.com) e execute as migrações SQL abaixo no **SQL Editor**:
 
 <details>
-<summary>📦 SQL — Criar tabelas</summary>
+<summary>SQL — Criar tabelas</summary>
 
 ```sql
 CREATE TABLE categorias (
@@ -86,7 +86,7 @@ CREATE INDEX idx_transacoes_user_tipo ON transacoes(user_id, tipo);
 </details>
 
 <details>
-<summary>🔒 SQL — Habilitar RLS (Row Level Security)</summary>
+<summary>SQL — Habilitar RLS (Row Level Security)</summary>
 
 ```sql
 ALTER TABLE categorias ENABLE ROW LEVEL SECURITY;
@@ -101,7 +101,7 @@ CREATE POLICY "Users can manage own transacoes" ON transacoes FOR ALL USING (aut
 </details>
 
 <details>
-<summary>🌱 SQL — Auto-seed categorias ao criar conta</summary>
+<summary>SQL — Auto-seed categorias ao criar conta</summary>
 
 ```sql
 CREATE OR REPLACE FUNCTION public.seed_user_defaults()
@@ -157,7 +157,7 @@ Edite o `.env` com a URL e chave do seu projeto Supabase (encontra em **Settings
 npm run dev
 ```
 
-Acesse **http://localhost:5173** 🎉
+Acesse **http://localhost:5173** 
 
 ## ☁️ Deploy no Vercel
 
@@ -166,9 +166,9 @@ Acesse **http://localhost:5173** 🎉
 3. Configure as variáveis de ambiente:
    - `VITE_SUPABASE_URL`
    - `VITE_SUPABASE_ANON_KEY`
-4. Deploy automático a cada `git push` ✅
+4. Deploy automático a cada `git push` 
 
-## 📁 Estrutura
+## Estrutura
 
 ```
 rs-finance/
@@ -187,6 +187,6 @@ rs-finance/
 └── package.json
 ```
 
-## 📄 Licença
+## Licença
 
 MIT © Robson Santiago
