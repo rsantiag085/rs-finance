@@ -2,7 +2,7 @@
  * RS Finance — Transaction Form Modal
  */
 import { supabase } from './lib/supabase.js';
-import { addTransacao, getCategorias, getMetodos } from './data.js';
+import { addTransacao, updateTransacao, getCategorias, getMetodos } from './data.js';
 
 let categorias = [];
 let metodos = [];
@@ -12,7 +12,9 @@ export async function initFormData() {
   metodos = await getMetodos();
 }
 
-export function renderTransacaoModal(onSuccess) {
+export function renderTransacaoModal(onSuccess, transacao = null) {
+  const isEdit = transacao !== null;
+
   // Remove existing modal
   const existing = document.getElementById('modal-transacao');
   if (existing) existing.remove();
@@ -23,7 +25,7 @@ export function renderTransacaoModal(onSuccess) {
   modal.innerHTML = `
     <div class="modal-card">
       <div class="modal-header">
-        <h3 class="modal-title">➕ Nova Transação</h3>
+        <h3 class="modal-title">${isEdit ? '✏️ Editar Transação' : '➕ Nova Transação'}</h3>
         <button class="modal-close" id="modal-close" aria-label="Fechar">&times;</button>
       </div>
       <form id="form-transacao" class="modal-form">
@@ -77,7 +79,7 @@ export function renderTransacaoModal(onSuccess) {
         <div class="modal-actions">
           <button type="button" class="btn-secondary" id="btn-cancel">Cancelar</button>
           <button type="submit" class="btn-primary" id="btn-save">
-            <span id="btn-save-text">💾 Salvar</span>
+            <span id="btn-save-text">${isEdit ? '💾 Salvar alterações' : '💾 Salvar'}</span>
             <span id="btn-save-loading" class="spinner" style="display: none;"></span>
           </button>
         </div>
@@ -88,9 +90,19 @@ export function renderTransacaoModal(onSuccess) {
 
   document.body.appendChild(modal);
 
-  // Set default date to today
-  const today = new Date().toISOString().split('T')[0];
-  document.getElementById('tx-data').value = today;
+  // Pre-fill form when editing
+  if (isEdit) {
+    document.getElementById('tx-descricao').value = transacao.descricao || '';
+    document.getElementById('tx-valor').value = transacao.valor || '';
+    document.getElementById('tx-tipo').value = transacao.tipo || 'saida';
+    document.getElementById('tx-data').value = transacao.data || '';
+    document.getElementById('tx-categoria').value = transacao.categoria_id || '';
+    document.getElementById('tx-metodo').value = transacao.metodo_id || '';
+    document.getElementById('tx-obs').value = transacao.observacao || '';
+  } else {
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById('tx-data').value = today;
+  }
 
   // Animate in
   requestAnimationFrame(() => modal.classList.add('active'));
@@ -127,7 +139,11 @@ export function renderTransacaoModal(onSuccess) {
     setFormLoading(true);
 
     try {
-      await addTransacao({ descricao, valor, tipo, data, categoria_id, metodo_id, observacao });
+      if (isEdit) {
+        await updateTransacao(transacao.id, { descricao, valor, tipo, data, categoria_id, metodo_id, observacao });
+      } else {
+        await addTransacao({ descricao, valor, tipo, data, categoria_id, metodo_id, observacao });
+      }
       closeModal();
       if (onSuccess) onSuccess();
     } catch (err) {

@@ -1,7 +1,7 @@
 /**
  * RS Finance — Metas UI
  */
-import { getMetas, addMeta, deleteMeta, concluirMeta, addDeposito } from './metas.js';
+import { getMetas, addMeta, updateMeta, deleteMeta, concluirMeta, addDeposito } from './metas.js';
 import { formatBRL } from './data.js';
 
 const EMOJIS = [
@@ -75,6 +75,13 @@ function renderMetasGrid() {
     btn.addEventListener('click', () => {
       const meta = metas.find(m => m.id === btn.dataset.id);
       if (meta) renderDepositoModal(meta, loadMetas);
+    });
+  });
+
+  grid.querySelectorAll('.btn-edit-meta').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const meta = metas.find(m => m.id === btn.dataset.id);
+      if (meta) renderMetaModal(loadMetas, meta);
     });
   });
 
@@ -161,6 +168,7 @@ function renderMetaCardHTML(meta) {
         </div>
         <div class="meta-card-actions">
           ${atingida ? `<button class="btn-concluir-meta meta-icon-btn" data-id="${meta.id}" title="Concluir meta">✅</button>` : ''}
+          <button class="btn-edit-meta meta-icon-btn" data-id="${meta.id}" title="Editar">✏️</button>
           <button class="btn-delete-meta meta-icon-btn" data-id="${meta.id}" title="Excluir">🗑️</button>
         </div>
       </div>
@@ -186,7 +194,9 @@ function renderMetaCardHTML(meta) {
   `;
 }
 
-export function renderMetaModal(onSuccess) {
+export function renderMetaModal(onSuccess, meta = null) {
+  const isEdit = meta !== null;
+
   const existing = document.getElementById('modal-meta');
   if (existing) existing.remove();
 
@@ -197,7 +207,7 @@ export function renderMetaModal(onSuccess) {
   modal.innerHTML = `
     <div class="modal-card">
       <div class="modal-header">
-        <h3 class="modal-title">🎯 Nova Meta</h3>
+        <h3 class="modal-title">${isEdit ? '✏️ Editar Meta' : '🎯 Nova Meta'}</h3>
         <button class="modal-close" id="meta-close">&times;</button>
       </div>
 
@@ -243,7 +253,7 @@ export function renderMetaModal(onSuccess) {
         <div class="modal-actions">
           <button type="button" class="btn-secondary" id="meta-cancel">Cancelar</button>
           <button type="submit" class="btn-primary" id="meta-submit">
-            <span id="meta-submit-text">🎯 Criar Meta</span>
+            <span id="meta-submit-text">${isEdit ? '💾 Salvar alterações' : '🎯 Criar Meta'}</span>
             <span id="meta-submit-spinner" class="spinner" style="display: none;"></span>
           </button>
         </div>
@@ -255,9 +265,23 @@ export function renderMetaModal(onSuccess) {
   document.body.appendChild(modal);
   requestAnimationFrame(() => modal.classList.add('active'));
 
-  // Highlight defaults
-  modal.querySelector(`.emoji-btn[data-emoji="🎯"]`).classList.add('selected');
-  modal.querySelector(`.color-btn[data-cor="${CORES[0]}"]`).classList.add('selected');
+  // Pre-fill when editing, otherwise highlight defaults
+  const defaultEmoji = isEdit ? meta.icone : '🎯';
+  const defaultCor = isEdit ? meta.cor : CORES[0];
+
+  if (isEdit) {
+    document.getElementById('meta-nome').value = meta.nome || '';
+    document.getElementById('meta-valor-alvo').value = meta.valor_alvo || '';
+    document.getElementById('meta-data-limite').value = meta.data_limite || '';
+    document.getElementById('meta-descricao').value = meta.descricao || '';
+    document.getElementById('meta-icone').value = meta.icone;
+    document.getElementById('meta-cor').value = meta.cor;
+  }
+
+  const emojiBtn = modal.querySelector(`.emoji-btn[data-emoji="${defaultEmoji}"]`);
+  if (emojiBtn) emojiBtn.classList.add('selected');
+  const corBtn = modal.querySelector(`.color-btn[data-cor="${defaultCor}"]`);
+  if (corBtn) corBtn.classList.add('selected');
 
   modal.querySelectorAll('.emoji-btn').forEach(btn => {
     btn.addEventListener('click', () => {
@@ -302,7 +326,11 @@ export function renderMetaModal(onSuccess) {
     spinner.style.display = 'inline-block';
 
     try {
-      await addMeta({ nome, valor_alvo, icone, cor, data_limite, descricao });
+      if (isEdit) {
+        await updateMeta(meta.id, { nome, valor_alvo, icone, cor, data_limite, descricao });
+      } else {
+        await addMeta({ nome, valor_alvo, icone, cor, data_limite, descricao });
+      }
       closeModal();
       if (onSuccess) onSuccess();
     } catch (err) {

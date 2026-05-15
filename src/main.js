@@ -425,7 +425,8 @@ function renderTable(filter = 'todos') {
         </td>
         <td class="td-metodo">${met ? met.nome : '—'}</td>
         <td class="td-data">${dataFormatted}</td>
-        <td>
+        <td class="td-actions">
+          <button class="btn-edit" data-id="${t.id}" title="Editar">✏️</button>
           <button class="btn-delete" data-id="${t.id}" title="Excluir">🗑️</button>
         </td>
       </tr>
@@ -433,6 +434,17 @@ function renderTable(filter = 'todos') {
   }).join('');
 
   document.getElementById('table-count').textContent = `${dados.length} transações`;
+
+  // Edit buttons
+  tbody.querySelectorAll('.btn-edit').forEach(btn => {
+    btn.addEventListener('click', async (e) => {
+      const id = e.currentTarget.dataset.id;
+      const transacao = transacoes.find(t => t.id === id);
+      if (!transacao) return;
+      await initFormData();
+      renderTransacaoModal(() => loadData(), transacao);
+    });
+  });
 
   // Delete buttons
   tbody.querySelectorAll('.btn-delete').forEach(btn => {

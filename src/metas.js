@@ -29,6 +29,17 @@ export async function deleteMeta(id) {
   if (error) throw error;
 }
 
+export async function updateMeta(id, updates) {
+  const { data, error } = await supabase
+    .from('metas')
+    .update({ ...updates, updated_at: new Date().toISOString() })
+    .eq('id', id)
+    .select()
+    .single();
+  if (error) throw error;
+  return data;
+}
+
 export async function concluirMeta(id) {
   const { error } = await supabase
     .from('metas')

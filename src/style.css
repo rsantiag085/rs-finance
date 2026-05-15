@@ -233,7 +233,9 @@ tbody td { padding: 14px 16px; font-size: 14px; border-bottom: 1px solid rgba(14
 .td-categoria .dot { width: 6px; height: 6px; border-radius: 50%; }
 .td-metodo { font-size: 12px; color: var(--text-secondary); }
 .td-data { font-size: 12px; color: var(--text-muted); font-variant-numeric: tabular-nums; }
-.btn-delete { background: none; border: none; cursor: pointer; font-size: 14px; opacity: 0.4; transition: var(--transition-fast); padding: 4px; }
+.td-actions { display: flex; align-items: center; gap: 2px; }
+.btn-edit, .btn-delete { background: none; border: none; cursor: pointer; font-size: 14px; opacity: 0.4; transition: var(--transition-fast); padding: 4px; border-radius: 6px; }
+.btn-edit:hover { opacity: 1; transform: scale(1.2); }
 .btn-delete:hover { opacity: 1; transform: scale(1.2); }
 .error-text { color: var(--accent-red); }
 
