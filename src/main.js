@@ -15,6 +15,7 @@ import {
 } from './data.js';
 import { criarGraficoDoughnut, criarCentroTexto, destroyCharts } from './charts.js';
 import { renderTransacaoModal, initFormData } from './transacao-form.js';
+import { renderMetasSection } from './metas-ui.js';
 
 // ============================================================
 // State
@@ -203,6 +204,9 @@ async function renderDashboard() {
       </div>
     </main>
 
+    <!-- METAS -->
+    <div id="metas-container"></div>
+
     <!-- FOOTER -->
     <footer class="footer">
       RS Finance © 2026 — Controle seu dinheiro, mude sua vida 💚
@@ -214,6 +218,9 @@ async function renderDashboard() {
 
   // Load data (non-blocking — don't await)
   loadData();
+
+  // Metas section (independent, loads its own data)
+  renderMetasSection(document.getElementById('metas-container'));
 }
 
 // ============================================================
