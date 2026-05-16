@@ -16,6 +16,7 @@ import {
 import { criarGraficoDoughnut, criarCentroTexto, destroyCharts } from './charts.js';
 import { renderTransacaoModal, initFormData } from './transacao-form.js';
 import { renderMetasSection } from './metas-ui.js';
+import { escapeHtml } from './lib/utils.js';
 
 // ============================================================
 // State
@@ -74,7 +75,7 @@ async function renderDashboard() {
         <img src="/logo-small.png" alt="RS Finance" class="header-logo-img" />
         <div>
           <div class="header-title">RS Finance</div>
-          <div class="header-subtitle">Olá, ${userName} 👋</div>
+          <div class="header-subtitle">Olá, ${escapeHtml(userName)} 👋</div>
         </div>
       </div>
       <div class="header-actions">
@@ -417,7 +418,7 @@ function renderTable(filter = 'todos') {
 
     return `
       <tr style="animation: fadeInUp 0.3s ease-out ${i * 0.02}s backwards">
-        <td class="td-nome">${t.descricao}</td>
+        <td class="td-nome">${escapeHtml(t.descricao)}</td>
         <td class="td-valor ${t.tipo}">
           ${t.tipo === 'entrada' ? '+' : '-'} ${formatBRL(t.valor)}
         </td>
@@ -429,10 +430,10 @@ function renderTable(filter = 'todos') {
         <td>
           <span class="td-categoria">
             <span class="dot" style="background: ${corCat}"></span>
-            ${cat ? cat.nome : '—'}
+            ${cat ? escapeHtml(cat.nome) : '—'}
           </span>
         </td>
-        <td class="td-metodo">${met ? met.nome : '—'}</td>
+        <td class="td-metodo">${met ? escapeHtml(met.nome) : '—'}</td>
         <td class="td-data">${dataFormatted}</td>
         <td class="td-actions">
           <button class="btn-edit" data-id="${t.id}" title="Editar">✏️</button>

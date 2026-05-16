@@ -3,6 +3,7 @@
  */
 import { getMetas, addMeta, updateMeta, deleteMeta, concluirMeta, addDeposito } from './metas.js';
 import { formatBRL } from './data.js';
+import { escapeHtml } from './lib/utils.js';
 
 const EMOJIS = [
   '🎯', '✈️', '🏖️', '🌍', '🏝️',
@@ -50,7 +51,11 @@ async function loadMetas() {
     renderMetasGrid();
   } catch (err) {
     console.error('Erro ao carregar metas:', err);
-    grid.innerHTML = `<p class="metas-erro">Erro ao carregar metas: ${err.message}</p>`;
+    const p = document.createElement('p');
+    p.className = 'metas-erro';
+    p.textContent = `Erro ao carregar metas: ${err.message}`;
+    grid.innerHTML = '';
+    grid.appendChild(p);
   }
 }
 
@@ -163,8 +168,8 @@ function renderMetaCardHTML(meta) {
           <span class="meta-emoji">${meta.icone}</span>
         </div>
         <div class="meta-info">
-          <div class="meta-nome">${meta.nome}</div>
-          ${meta.descricao ? `<div class="meta-descricao">${meta.descricao}</div>` : ''}
+          <div class="meta-nome">${escapeHtml(meta.nome)}</div>
+          ${meta.descricao ? `<div class="meta-descricao">${escapeHtml(meta.descricao)}</div>` : ''}
         </div>
         <div class="meta-card-actions">
           ${atingida ? `<button class="btn-concluir-meta meta-icon-btn" data-id="${meta.id}" title="Concluir meta">✅</button>` : ''}
@@ -357,7 +362,7 @@ function renderDepositoModal(meta, onSuccess) {
   modal.innerHTML = `
     <div class="modal-card modal-card-sm">
       <div class="modal-header">
-        <h3 class="modal-title">${meta.icone} ${meta.nome}</h3>
+        <h3 class="modal-title">${escapeHtml(meta.icone)} ${escapeHtml(meta.nome)}</h3>
         <button class="modal-close" id="dep-close">&times;</button>
       </div>
 
@@ -427,7 +432,7 @@ function renderDepositoModal(meta, onSuccess) {
     spinner.style.display = 'inline-block';
 
     try {
-      await addDeposito(meta.id, { valor, data, observacao }, meta.valor_atual);
+      await addDeposito(meta.id, { valor, data, observacao });
       closeModal();
       if (onSuccess) onSuccess();
     } catch (err) {

@@ -48,7 +48,7 @@ export async function concluirMeta(id) {
   if (error) throw error;
 }
 
-export async function addDeposito(metaId, deposito, valorAtualMeta) {
+export async function addDeposito(metaId, deposito) {
   const { data: { user } } = await supabase.auth.getUser();
 
   const { error: depError } = await supabase
@@ -56,13 +56,8 @@ export async function addDeposito(metaId, deposito, valorAtualMeta) {
     .insert({ ...deposito, meta_id: metaId, user_id: user.id });
   if (depError) throw depError;
 
-  const novoValor = Number(valorAtualMeta) + Number(deposito.valor);
   const { data, error } = await supabase
-    .from('metas')
-    .update({ valor_atual: novoValor, updated_at: new Date().toISOString() })
-    .eq('id', metaId)
-    .select()
-    .single();
+    .rpc('incrementar_valor_meta', { p_meta_id: metaId, p_valor: deposito.valor });
   if (error) throw error;
   return data;
 }
