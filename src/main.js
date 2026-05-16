@@ -311,7 +311,15 @@ function renderKPIs() {
   saldoEl.textContent = formatBRL(resumo.saldo);
   saldoEl.className = `kpi-value ${resumo.saldo >= 0 ? 'positivo' : 'negativo'}`;
 
-  document.getElementById('kpi-comprometido').textContent = `${resumo.pctComprometido.toFixed(1)}%`;
+  // % Comprometido: sem receita + com despesa = 100% (danger), sem dados = "—"
+  const comprometidoEl = document.getElementById('kpi-comprometido');
+  if (resumo.totalEntradas === 0 && resumo.totalSaidas > 0) {
+    comprometidoEl.textContent = '100%';
+  } else if (resumo.totalEntradas === 0 && resumo.totalSaidas === 0) {
+    comprometidoEl.textContent = '—';
+  } else {
+    comprometidoEl.textContent = `${resumo.pctComprometido.toFixed(1)}%`;
+  }
 
   const nEntradas = transacoes.filter(t => t.tipo === 'entrada').length;
   const nSaidas = transacoes.filter(t => t.tipo === 'saida').length;
@@ -321,9 +329,10 @@ function renderKPIs() {
 
   const progressBar = document.getElementById('progress-bar');
   setTimeout(() => {
-    const pct = Math.min(resumo.pctComprometido, 100);
+    const isDanger = resumo.pctComprometido > 100 || (resumo.totalEntradas === 0 && resumo.totalSaidas > 0);
+    const pct = (resumo.totalEntradas === 0 && resumo.totalSaidas > 0) ? 100 : Math.min(resumo.pctComprometido, 100);
     progressBar.style.width = `${pct}%`;
-    progressBar.className = `progress-bar${resumo.pctComprometido > 100 ? ' danger' : ''}`;
+    progressBar.className = `progress-bar${isDanger ? ' danger' : ''}`;
   }, 300);
 }
 
